@@ -1,5 +1,8 @@
 ;(function() {
-    editor = null;
+    var editor = null;
+    var jwerty = require('./jwerty.js').jwerty;
+    var htmlView = document.getElementById('out');
+    var markdownView = document.getElementById('in');
 
     var save = function(code, name){
         var blob = new Blob([code], { type: 'text/plain' });
@@ -16,31 +19,53 @@
             event.initMouseEvent('click', true, true, window, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
             link.dispatchEvent(event);
         }
-    }
+    };
 
     var saveAsMarkdown = function(){
         save(editor.getValue(), "untitled.md");
-    }
+    };
 
     var saveAsHtml = function() {
-        save(document.getElementById('out').innerHTML, "untitled.html");
-    }
+        save(htmlView.innerHTML, "untitled.html");
+    };
+
+    var showHtmlView = function() {
+        markdownView.style.width = '50%';
+        htmlView.style.display = 'block';
+    };
+
+    var hideHtmlView = function() {
+        markdownView.style.width = '100%';
+        htmlView.style.display = 'none';
+    };
 
     var bindings = [
         {
-            'shortcuts': ['ctrl+s', 'command+s'],
+            'shortcuts': ['ctrl+right'],
+            'callback': function(e) {
+                hideHtmlView();
+            }
+        },
+        {
+            'shortcuts': ['ctrl+left'],
+            'callback': function(e) {
+                showHtmlView();
+            }
+        },
+        {
+            'shortcuts': ['ctrl+s', 'cmd+s'],
             'callback': function(e) {
                 saveAsMarkdown();
             }
         },
         {
-            'shortcuts': ['ctrl+shift+s', 'command+shift+s'],
+            'shortcuts': ['ctrl+shift+s', 'cmd+shift+s'],
             'callback': function(e) {
                 saveAsHtml();
             }
         },
         {
-            'shortcuts': ['ctrl+shift+d', 'command+alt+d'],
+            'shortcuts': ['ctrl+shift+d', 'cmd+alt+d'],
             'callback': function(e) {
                 data = {
                     'description': "untitled.md",
@@ -63,7 +88,7 @@
             }
         },
         {
-            'shortcuts': ['ctrl+h', 'command+h'],
+            'shortcuts': ['ctrl+h', 'cmd+h'],
             'callback': function(e) {
                 alert("\
 (GitHub-Flavored) Markdown Editor\n\
@@ -82,7 +107,9 @@ Basic useful feature list:\n\
 
     var bind = function() {
         bindings.forEach(function(binding) {
-            Mousetrap.bind(binding.shortcuts, binding.callback);
+            for(var i = 0; i < binding.shortcuts.length; i++) {
+                jwerty.key(binding.shortcuts[i], binding.callback);
+            }
         });
     };
 

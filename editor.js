@@ -118,5 +118,4 @@
 
     Keybindings = require('./keybindings.js');
     Keys = new Keybindings(editor);
-
 })();
