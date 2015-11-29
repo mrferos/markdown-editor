@@ -116,6 +116,13 @@
         editor.focus();
     }
 
-    Keybindings = require('./keybindings.js');
-    Keys = new Keybindings(editor);
+    require('electron').ipcRenderer.on('markdown-content', function(event, message) {
+        editorData = JSON.parse(message);
+        editor.setValue(editorData.contents);
+        editor.fileName = editorData.isDefault ? 'untitled.md' : editorData.fileName;
+        update(editor);
+
+        Keybindings = require('./keybindings.js');
+        Keys = new Keybindings(editor);
+    });
 })();

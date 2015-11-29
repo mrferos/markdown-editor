@@ -22,11 +22,11 @@
     };
 
     var saveAsMarkdown = function(){
-        save(editor.getValue(), "untitled.md");
+        save(editor.getValue(), editor.fileName);
     };
 
     var saveAsHtml = function() {
-        save(htmlView.innerHTML, "untitled.html");
+        save(htmlView.innerHTML, editor.fileName.replace(/\.html/, '') + ".md");
     };
 
     var showHtmlView = function() {
